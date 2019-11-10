@@ -61,7 +61,7 @@ def login():
             path=os.path.join(arr1[i],arr[i][j])
             facecrop(path)
     global character
-    character=test_my_model.py()
+    character=test_my_model()
     Label(login_screen, text="Are you "+ character +" ?", fg="green", font=("calibri", 11)).pack()
     os.rmdir(d)
     Button(login_screen, text="Yes", width=10, height=1, bg="blue",command=attendance).pack()
@@ -114,7 +114,7 @@ def exit():
             path=os.path.join(arr1[i],arr[i][j])
             facecrop(path)
     global character
-    character=test_my_model.py()
+    character=test_my_model()
     Label(login_screen, text="Are you "+ character +" ?", fg="green", font=("calibri", 11)).pack()
     os.rmdir(d)
     Button(login_screen, text="Yes", width=10, height=1, bg="blue",command=exitout).pack()
@@ -268,4 +268,4 @@ Label(text="").pack()
 # create a register button
 Button(text="Register", height="2", width="30",command=register).pack()
 Button(text="Train", height="2", width="30",command=train_model).pack()
-main_screen.mainloop() # start the GUI
+main_screen.mainloop() # starts the GUI
