@@ -25,7 +25,7 @@ def login():
     Label(login_screen, text="Please enter details below", bg="blue").pack()
     #getting camfeed and storing it
     startTime=time.time()
-    capture_duration=10
+    capture_duration=5
     d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character")
     os.mkdir(d)
     face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
@@ -41,11 +41,11 @@ def login():
             cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = cv2frame[y:y + h, x:x + w]
         cv2.imshow("Login",cv2frame)
-        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/ourdata","character","character")
+        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character","character")
         filename=d1+str(i)+".jpg"
         i+=1
         cv2.imwrite(filename,cv2frame)
-        k=cv2.waitKey(200)
+        k=cv2.waitKey(100)
         if k==27:
             break
     cap.release()
@@ -69,7 +69,7 @@ def login():
 def attendance():
     attendance_here(character,today,current_time)
     Label(login_screen, text="Successfull,You may enter", fg="green", font=("calibri", 11)).pack()
-def exit():
+def exitout():
     #make login screen
     global login_screen
     login_screen = Toplevel(main_screen) 
@@ -78,7 +78,7 @@ def exit():
     Label(login_screen, text="Please enter details below", bg="blue").pack()
     #getting camfeed and storing it
     startTime=time.time()
-    capture_duration=10
+    capture_duration=5
     d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character")
     os.mkdir(d)
     face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
@@ -94,11 +94,11 @@ def exit():
             cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = cv2frame[y:y + h, x:x + w]
         cv2.imshow("Login",cv2frame)
-        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/ourdata","character","character")
+        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character","character")
         filename=d1+str(i)+".jpg"
         i+=1
         cv2.imwrite(filename,cv2frame)
-        k=cv2.waitKey(200)
+        k=cv2.waitKey(100)
         if k==27:
             break
     cap.release()
@@ -117,10 +117,10 @@ def exit():
     character=test_my_model()
     Label(login_screen, text="Are you "+ character +" ?", fg="green", font=("calibri", 11)).pack()
     os.rmdir(d)
-    Button(login_screen, text="Yes", width=10, height=1, bg="blue",command=exitout).pack()
+    Button(login_screen, text="Yes", width=10, height=1, bg="blue",command=exitattendance).pack()
     Button(login_screen, text="No", width=10, height=1, bg="blue",command=login_screen.destroy).pack()
-def exitout():
-    exit_out(character,today,current_time)
+def exitattendance():
+    exit_here(character,today,current_time)
     Label(login_screen, text="Successfull,You may out", fg="green", font=("calibri", 11)).pack()
 def register():
  
@@ -263,7 +263,7 @@ Label(text="").pack()
 # create Login Button 
 Button(text="Login", height="2", width="30",command=login).pack() 
 Label(text="").pack() 
-Button(text="Exit", height="2", width="30",command=exit).pack() 
+Button(text="Exit", height="2", width="30",command=exitout).pack() 
 Label(text="").pack()
 # create a register button
 Button(text="Register", height="2", width="30",command=register).pack()
