@@ -125,6 +125,7 @@ def exitattendance():
     exit_here(character,today,current_time)
     Label(login_screen, text="Successfull,You may out", fg="green", font=("calibri", 11)).pack()
 def register():
+
  
 # The Toplevel widget work pretty much like Frame,
 # but it is displayed in a separate, top-level window. 
@@ -253,6 +254,94 @@ def train_model():
         main_screen.destroy()
     else:
         Label(text="Training can be done only on saturday/sunday", fg="green", font=("calibri", 11)).pack()
+def register_admin():
+    startTime=time.time()
+    capture_duration=5
+    d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character")
+    os.mkdir(d)
+    face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
+    cap = cv2.VideoCapture(0)
+    i=0
+    while (int(time.time()-startTime)<capture_duration):
+
+        ret, cv2frame = cap.read()
+        #show_frame(cv2frame)
+
+        faces = face_cascade.detectMultiScale(cv2frame,1.3,5)
+        for (x, y, w, h) in faces:
+            cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            roi_color = cv2frame[y:y + h, x:x + w]
+        cv2.imshow("Login",cv2frame)
+        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character","character")
+        filename=d1+str(i)+".jpg"
+        i+=1
+        cv2.imwrite(filename,cv2frame)
+        k=cv2.waitKey(10)
+        if k==27:
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+    #after applying haar-cascade autocrop in test set
+    path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata"
+    arr1=os.listdir(path)
+    for i in range(len(arr1)):
+        arr1[i]=os.path.join(path,arr1[i])
+    arr=[os.listdir(arr1[i]) for i in range(len(arr1))]
+    for i in range(len(arr1)):
+        for j in range(len(arr[i])):
+            path=os.path.join(arr1[i],arr[i][j])
+            facecrop(path)
+    global character
+    character=test_my_model()
+    shutil.rmtree(d)
+    if character=="admin":
+        register()
+    else:
+        main_screen.destroy()
+def train_model_admin():
+    startTime=time.time()
+    capture_duration=5
+    d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character")
+    os.mkdir(d)
+    face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
+    cap = cv2.VideoCapture(0)
+    i=0
+    while (int(time.time()-startTime)<capture_duration):
+
+        ret, cv2frame = cap.read()
+        #show_frame(cv2frame)
+
+        faces = face_cascade.detectMultiScale(cv2frame,1.3,5)
+        for (x, y, w, h) in faces:
+            cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            roi_color = cv2frame[y:y + h, x:x + w]
+        cv2.imshow("Login",cv2frame)
+        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character","character")
+        filename=d1+str(i)+".jpg"
+        i+=1
+        cv2.imwrite(filename,cv2frame)
+        k=cv2.waitKey(10)
+        if k==27:
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+    #after applying haar-cascade autocrop in test set
+    path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata"
+    arr1=os.listdir(path)
+    for i in range(len(arr1)):
+        arr1[i]=os.path.join(path,arr1[i])
+    arr=[os.listdir(arr1[i]) for i in range(len(arr1))]
+    for i in range(len(arr1)):
+        for j in range(len(arr[i])):
+            path=os.path.join(arr1[i],arr[i][j])
+            facecrop(path)
+    global character
+    character=test_my_model()
+    shutil.rmtree(d)
+    if character=="admin":
+        train_model()
+    else:
+        main_screen.destroy()
 global main_screen
 main_screen = tk.Tk()   # create a GUI window 
 main_screen.geometry("400x300") # set the configuration of GUI window 
@@ -268,6 +357,6 @@ Label(text="").pack()
 Button(text="Exit", height="2", width="30",command=exitout).pack() 
 Label(text="").pack()
 # create a register button
-Button(text="Register", height="2", width="30",command=register).pack()
-Button(text="Train", height="2", width="30",command=train_model).pack()
+Button(text="Register", height="2", width="30",command=register_admin).pack()
+Button(text="Train", height="2", width="30",command=train_model_admin).pack()
 main_screen.mainloop() # start the GUI
