@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 import os,shutil,glob
 
 
-
+from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
 
 class DeepNetwork:
@@ -36,13 +36,17 @@ class DeepNetwork:
         pass
 
     @staticmethod
-    def train(model, training_set, valid_set=None, epoc=600, batch=40):
+    def train(model, training_set, valid_set=None, epoc=100, batch=500):
         train_batches = ImageDataGenerator().flow_from_directory(
             training_set,
             target_size=(64,64),
-            batch_size=batch
+            batch_size=32
         )
-        model.fit_generator(train_batches,steps_per_epoch=100,epochs=epoc)
+        earlyStopping = EarlyStopping(monitor='accuracy', patience=10, verbose=0, mode='max')
+        mcp_save = ModelCheckpoint('mdl_wts.hdf5', save_best_only=True, monitor='accuracy', mode='max')
+        reduce_lr_loss = ReduceLROnPlateau(monitor='accuracy', factor=0.1, patience=7, verbose=1, epsilon=1e-4, mode='max')
+
+        model.fit_generator(train_batches,steps_per_epoch=batch, epochs=epoc, callbacks=[earlyStopping, mcp_save, reduce_lr_loss])
         return model
 
     def load(self, path="model.bin"):
@@ -114,5 +118,5 @@ class DeepNetwork:
 emp_classes=len(os.listdir("trainparent"))
 
 model = DeepNetwork.model((64,64,3), emp_classes)
-model = DeepNetwork.train(model, "trainparent", epoc=1)
+model = DeepNetwork.train(model, "trainparent")
 DeepNetwork.save(model)
