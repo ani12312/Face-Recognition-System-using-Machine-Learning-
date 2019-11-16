@@ -15,7 +15,5 @@ def test_my_model():
     )
     model=load_model("model.h5")
     pred=model.predict_classes(test_batches, batch_size=None)
-    print(train.filenames)
     return pred
 
-print(test_my_model())

@@ -20,10 +20,11 @@ from exit__out import *
 current_time=now.strftime("%H:%M:%S")
 
 charecter_folder = "yourdata"+os.sep+"character"
+character = 0
 if not os.path.exists(charecter_folder):
     os.makedirs(charecter_folder)
 
-
+face_capture = False
 def login():
     #make login screen
     
@@ -34,6 +35,8 @@ def login():
     i=0
     while True:
         crop_image = None
+        face_capture = False
+
         ret, cv2frame = cap.read()
         faces = face_cascade.detectMultiScale(cv2frame,1.3,5)
         for (x, y, w, h) in faces:
@@ -50,8 +53,8 @@ def login():
         elif k == 32:
             if len(faces) == 1:
                 cv2.imwrite(charecter_folder+os.sep+"tmp.jpg", crop_image)
-                character=test_my_model()
-                print(character)
+                character = test_my_model()[0]
+                face_capture = True
                 break
     cap.release()
     cv2.destroyAllWindows()
@@ -69,22 +72,22 @@ def login():
     # global character
     # character=test_my_model()
     # shutil.rmtree(d)
-    # if character!="forged":
-    #     global login_screen
-    #     login_screen = Toplevel(main_screen) 
-    #     login_screen.title("Login")
-    #     login_screen.geometry("300x250")
-    #     Label(login_screen, text="Please enter details below", bg="blue").pack()
-    #     Label(login_screen, text="Are you "+ character +" ?", fg="green", font=("calibri", 11)).pack()
-    #     Button(login_screen, text="Yes", width=10, height=1, bg="blue",command=attendance).pack()
-    #     Button(login_screen, text="No", width=10, height=1, bg="blue",command=login_screen.destroy).pack()
-    # else:
-    #     main_screen.destroy()
+    if face_capture:
+        global login_screen
+        login_screen = Toplevel(main_screen) 
+        login_screen.title("Login")
+        login_screen.geometry("300x250")
+        Label(login_screen, text="Please enter details below", bg="blue").pack()
+        Label(login_screen, text="Are your employe ID is : "+ str(character) +" ?", fg="green", font=("calibri", 11)).pack()
+        Button(login_screen, text="Yes", width=10, height=1, bg="blue",command=lambda: attendance(character)).pack()
+        Button(login_screen, text="No", width=10, height=1, bg="blue",command=login_screen.destroy).pack()
+    else:
+        main_screen.destroy()
 
 
-def attendance():
-    attendance_here(character,today,current_time)
+def attendance(character):
     Label(login_screen, text="Successfull,You may enter", fg="green", font=("calibri", 11)).pack()
+    attendance_here(str(character), today, current_time)
 def exitout():
     #getting camfeed and storing it
     startTime=time.time()
