@@ -3,8 +3,8 @@ import os
 
 
 def exit_here(character,today,current_time):
-    n=os.listdir("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/trainparent")
-    file_path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/exit.csv"
+    n=os.listdir("trainparent")
+    file_path="exit.csv"
     df=pd.read_csv(file_path)
     today1=str(today)
     current_time1=str(current_time)
