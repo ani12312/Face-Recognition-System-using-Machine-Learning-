@@ -1,9 +1,8 @@
+import os
+import time
 import tkinter as tk
 from tkinter import *
 import cv2 
-import os
-import time
-from train import *
 from test import *
 from attendance import *
 import csv
@@ -11,66 +10,78 @@ import time
 import datetime
 import shutil
 global today
+
 today=datetime.date.today()
+
 from datetime import datetime
 now=datetime.now()
 global current_time
 from exit__out import *
 current_time=now.strftime("%H:%M:%S")
+
+charecter_folder = "yourdata"+os.sep+"character"
+if not os.path.exists(charecter_folder):
+    os.makedirs(charecter_folder)
+
+
 def login():
     #make login screen
     
     #getting camfeed and storing it
     startTime=time.time()
-    capture_duration=5
-    d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character")
-    os.mkdir(d)
-    face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     cap = cv2.VideoCapture(0)
     i=0
-    while (int(time.time()-startTime)<capture_duration):
-
+    while True:
+        crop_image = None
         ret, cv2frame = cap.read()
-        #show_frame(cv2frame)
-
         faces = face_cascade.detectMultiScale(cv2frame,1.3,5)
         for (x, y, w, h) in faces:
+            crop_image = cv2frame[y:y+h, x:x+w].copy()
             cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = cv2frame[y:y + h, x:x + w]
         cv2.imshow("Login",cv2frame)
-        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character","character")
-        filename=d1+str(i)+".jpg"
-        i+=1
-        cv2.imwrite(filename,cv2frame)
+
+
+        # i+=1
         k=cv2.waitKey(10)
-        if k==27:
+        if k == 27:
             break
+        elif k == 32:
+            if len(faces) == 1:
+                cv2.imwrite(charecter_folder+os.sep+"tmp.jpg", crop_image)
+                character=test_my_model()
+                print(character)
+                break
     cap.release()
     cv2.destroyAllWindows()
     #after applying haar-cascade autocrop in test set
-    path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata"
-    arr1=os.listdir(path)
-    for i in range(len(arr1)):
-        arr1[i]=os.path.join(path,arr1[i])
-    arr=[os.listdir(arr1[i]) for i in range(len(arr1))]
-    for i in range(len(arr1)):
-        for j in range(len(arr[i])):
-            path=os.path.join(arr1[i],arr[i][j])
-            facecrop(path)
-    global character
-    character=test_my_model()
-    shutil.rmtree(d)
-    if character!="forged":
-        global login_screen
-        login_screen = Toplevel(main_screen) 
-        login_screen.title("Login")
-        login_screen.geometry("300x250")
-        Label(login_screen, text="Please enter details below", bg="blue").pack()
-        Label(login_screen, text="Are you "+ character +" ?", fg="green", font=("calibri", 11)).pack()
-        Button(login_screen, text="Yes", width=10, height=1, bg="blue",command=attendance).pack()
-        Button(login_screen, text="No", width=10, height=1, bg="blue",command=login_screen.destroy).pack()
-    else:
-        main_screen.destroy()
+
+    # path="yourdata"
+    # arr1=os.listdir(path)
+    # for i in range(len(arr1)):
+    #     arr1[i]=os.path.join(path,arr1[i])
+    # arr=[os.listdir(arr1[i]) for i in range(len(arr1))]
+    # for i in range(len(arr1)):
+    #     for j in range(len(arr[i])):
+    #         path=os.path.join(arr1[i],arr[i][j])
+    #         facecrop(path)
+    # global character
+    # character=test_my_model()
+    # shutil.rmtree(d)
+    # if character!="forged":
+    #     global login_screen
+    #     login_screen = Toplevel(main_screen) 
+    #     login_screen.title("Login")
+    #     login_screen.geometry("300x250")
+    #     Label(login_screen, text="Please enter details below", bg="blue").pack()
+    #     Label(login_screen, text="Are you "+ character +" ?", fg="green", font=("calibri", 11)).pack()
+    #     Button(login_screen, text="Yes", width=10, height=1, bg="blue",command=attendance).pack()
+    #     Button(login_screen, text="No", width=10, height=1, bg="blue",command=login_screen.destroy).pack()
+    # else:
+    #     main_screen.destroy()
+
+
 def attendance():
     attendance_here(character,today,current_time)
     Label(login_screen, text="Successfull,You may enter", fg="green", font=("calibri", 11)).pack()
@@ -78,9 +89,9 @@ def exitout():
     #getting camfeed and storing it
     startTime=time.time()
     capture_duration=5
-    d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character")
+    d=os.path.join("yourdata","character")
     os.mkdir(d)
-    face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     cap = cv2.VideoCapture(0)
     i=0
     while (int(time.time()-startTime)<capture_duration):
@@ -93,7 +104,7 @@ def exitout():
             cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = cv2frame[y:y + h, x:x + w]
         cv2.imshow("Login",cv2frame)
-        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character","character")
+        d1=os.path.join("yourdata","character","character")
         filename=d1+str(i)+".jpg"
         i+=1
         cv2.imwrite(filename,cv2frame)
@@ -103,7 +114,7 @@ def exitout():
     cap.release()
     cv2.destroyAllWindows()
     #after applying haar-cascade autocrop in test set
-    path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata"
+    path="yourdata"
     arr1=os.listdir(path)
     for i in range(len(arr1)):
         arr1[i]=os.path.join(path,arr1[i])
@@ -162,15 +173,15 @@ def opencam():
     #cameraoff()
     
     username1=username.get()
-    d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/trainparent",username1)
+    d=os.path.join("trainparent",username1)
     if not os.path.isdir(d):
         os.mkdir(d)
 
 # multiple cascades: https://github.com/Itseez/opencv/tree/master/data/haarcascades
 #lmain=tk.Label(frame)
 #lmain.grid()
-        face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
-#eye_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_eye.xml')
+        face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+#eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
 
         cap = cv2.VideoCapture(0)
         i=0
@@ -192,7 +203,7 @@ def opencam():
                 cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
                 roi_color = cv2frame[y:y + h, x:x + w]
             cv2.imshow("New Employee",cv2frame)
-            d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/trainparent",username1,username1)
+            d1=os.path.join("trainparent",username1,username1)
             filename=d1+str(i)+".jpg"
             i+=1
             cv2.imwrite(filename,cv2frame)
@@ -202,7 +213,7 @@ def opencam():
                 break
         cap.release()
         cv2.destroyAllWindows()
-        path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/trainparent"
+        path="trainparent"
         arr1=os.listdir(path)
         for i in range(len(arr1)):
             arr1[i]=os.path.join(path,arr1[i])
@@ -217,7 +228,7 @@ def opencam():
         Label(register_screen, text="Employee already Registered", fg="green", font=("calibri", 11)).pack()
         #register_screen.destroy())
 def facecrop(image):
-    facedata = "C:/Users/ANIRBAN MISRA/haarcascade_frontalface_default.xml"
+    facedata = "haarcascade_frontalface_default.xml"
     cascade = cv2.CascadeClassifier(facedata)
 
     img = cv2.imread(image)
@@ -242,9 +253,9 @@ def train_model():
     if today.weekday()==5 or today.weekday()==6:
         train_my_model()
         #Label(text="Training Success", fg="green", font=("calibri", 11)).pack()
-        attendance_path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/attendance.csv"
-        exit_path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/exit.csv"
-        n=os.listdir("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/trainparent")
+        attendance_path="attendance.csv"
+        exit_path="exit.csv"
+        n=os.listdir("trainparent")
         with open (attendance_path,'w',newline='') as csvfile:
             filewriter=csv.writer((csvfile))
             filewriter.writerow(n)
@@ -257,9 +268,9 @@ def train_model():
 def register_admin():
     startTime=time.time()
     capture_duration=5
-    d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character")
+    d=os.path.join("yourdata","character")
     os.mkdir(d)
-    face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     cap = cv2.VideoCapture(0)
     i=0
     while (int(time.time()-startTime)<capture_duration):
@@ -272,7 +283,7 @@ def register_admin():
             cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = cv2frame[y:y + h, x:x + w]
         cv2.imshow("Login",cv2frame)
-        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character","character")
+        d1=os.path.join("yourdata","character","character")
         filename=d1+str(i)+".jpg"
         i+=1
         cv2.imwrite(filename,cv2frame)
@@ -282,7 +293,7 @@ def register_admin():
     cap.release()
     cv2.destroyAllWindows()
     #after applying haar-cascade autocrop in test set
-    path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata"
+    path="yourdata"
     arr1=os.listdir(path)
     for i in range(len(arr1)):
         arr1[i]=os.path.join(path,arr1[i])
@@ -301,9 +312,9 @@ def register_admin():
 def train_model_admin():
     startTime=time.time()
     capture_duration=5
-    d=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character")
+    d=os.path.join("yourdata","character")
     os.mkdir(d)
-    face_cascade = cv2.CascadeClassifier('C:\\Users\\ANIRBAN MISRA\\haarcascade_frontalface_default.xml')
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     cap = cv2.VideoCapture(0)
     i=0
     while (int(time.time()-startTime)<capture_duration):
@@ -316,7 +327,7 @@ def train_model_admin():
             cv2.rectangle(cv2frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = cv2frame[y:y + h, x:x + w]
         cv2.imshow("Login",cv2frame)
-        d1=os.path.join("C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata","character","character")
+        d1=os.path.join("yourdata","character","character")
         filename=d1+str(i)+".jpg"
         i+=1
         cv2.imwrite(filename,cv2frame)
@@ -326,7 +337,7 @@ def train_model_admin():
     cap.release()
     cv2.destroyAllWindows()
     #after applying haar-cascade autocrop in test set
-    path="C:/Users/ANIRBAN MISRA/Downloads/originalimages_part1/yourdata"
+    path="yourdata"
     arr1=os.listdir(path)
     for i in range(len(arr1)):
         arr1[i]=os.path.join(path,arr1[i])
