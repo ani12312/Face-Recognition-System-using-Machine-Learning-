@@ -21,12 +21,15 @@ current_time=now.strftime("%H:%M:%S")
 
 charecter_folder = "yourdata"+os.sep+"character"
 sample_folder = "newsample"
+yourdata = "yourdata" + os.sep + "character"
+
 character = 0
 if not os.path.exists(charecter_folder):
     os.makedirs(charecter_folder)
-
 if not os.path.exists(sample_folder):
     os.makedirs(sample_folder)
+if not os.path.exists(yourdata):
+    os.makedirs(yourdata)
 
 face_capture = False
 def login():
